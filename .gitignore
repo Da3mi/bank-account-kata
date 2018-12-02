@@ -1,6 +1,23 @@
 # Compiled class file
 *.class
 
+# Other files
+**/.classpath
+**/.flattened-pom.xml
+**/.project
+**/.settings
+**/.springBeans
+**/.readme.md.html
+**/.readme.md
+**/bin
+**/target
+**/src/main/webapp/
+**/public/
+.metadata/
+.recommenders/
+.sonarlint/
+.idea/
+
 # Log file
 *.log
 
@@ -21,3 +38,6 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+/.metadata/
+
+.recommenders/
