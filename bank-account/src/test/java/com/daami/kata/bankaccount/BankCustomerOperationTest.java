@@ -102,4 +102,12 @@ public class BankCustomerOperationTest {
 
 	}
 	
+	
+	@Test
+	public void customer_should_check_operations() {
+	
+		BankAccountStatementServiceImpl bankAccountStatementServiceImpl = new BankAccountStatementServiceImpl();
+		
+	}
+	
 }
