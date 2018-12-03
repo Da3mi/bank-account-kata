@@ -9,5 +9,7 @@ public interface BankCustomerOperationService {
 	
 	public Customer deposit(final Customer customer, final BigDecimal depositTransactionValue) throws ServiceException;
 	
+	public Customer withdraw(Customer customer, BigDecimal withdrawTransactionValue) throws ServiceException;
+	
 	
 }

@@ -26,29 +26,34 @@ public class BankCustomerOperationServiceImpl implements BankCustomerOperationSe
 					.map(customerO -> createNewCustomer(customerO, depositTransactionValue, OperationType.DEPOSIT_OPERATION))
 					.orElseThrow(() -> new ServiceException("customer not found to do deposit transaction"));
 	}
+	
+	@Override
+	public Customer withdraw(Customer customer, BigDecimal withdrawTransactionValue) {
+		return Optional.ofNullable(customer)
+				.map(customerO -> createNewCustomer(customerO, withdrawTransactionValue, OperationType.WITHDRAWAL_OPERATION))
+				.orElseThrow(() -> new ServiceException("customer not found to do withdraw transaction"));
+	}
 
 	private Customer createNewCustomer(final Customer actualCustomer, final BigDecimal transactionAmount, OperationType operationType) {
 		return Customer.builder()
 					.name(actualCustomer.getName())
 					.id(actualCustomer.getId())
-					.account(createNewClientAccount(transactionAmount, actualCustomer.getAccount(), operationType))
+					.account(createNewCustomerAccount(transactionAmount, actualCustomer.getAccount(), operationType))
 					.build();
 	}
 
-	private Account createNewClientAccount(final BigDecimal transactionAmount, final Account account, OperationType operationType) {
+	private Account createNewCustomerAccount(final BigDecimal transactionAmount, final Account account, OperationType operationType) {
 		return Account.builder()
 					.accountId(account.getAccountId())
 					.accountBalance(computeBalance(account.getAccountBalance(), transactionAmount, operationType))
 					.accountTransactions(createNewListOfTransaction(account.getAccountTransactions(), transactionAmount, operationType))
 					.build();
 	}
-
 	
-	private BigDecimal computeBalance(BigDecimal actualBalance, BigDecimal transactionAmount, OperationType operationType ) throws ServiceException {
+	private BigDecimal computeBalance(BigDecimal actualBalance, BigDecimal transactionAmount, OperationType operationType ) {
 		return Optional.ofNullable(actualBalance).map( balance -> 
 				OperationType.DEPOSIT_OPERATION.equals(operationType) ? balance.add(transactionAmount) : balance.subtract(transactionAmount))
 				.orElseThrow(() -> new ServiceException("internal technical error"));
-		
 	}
 	
 	private List<AccountTransaction> createNewListOfTransaction(List<AccountTransaction> accountTransactions,
@@ -67,10 +72,5 @@ public class BankCustomerOperationServiceImpl implements BankCustomerOperationSe
 								.transactionDate(transactionDateTime)
 								.build();
 	}
-
-	public Customer withdraw(Customer customer, BigDecimal withdrawTransactionValue) throws ServiceException {
-		return Optional.ofNullable(customer)
-				.map(customerO -> createNewCustomer(customerO, withdrawTransactionValue, OperationType.WITHDRAWAL_OPERATION))
-				.orElseThrow(() -> new ServiceException("customer not found to do withdraw transaction"));
-	}
+	
 }
