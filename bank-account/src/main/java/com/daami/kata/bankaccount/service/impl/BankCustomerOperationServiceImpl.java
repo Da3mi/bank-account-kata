@@ -31,7 +31,8 @@ public class BankCustomerOperationServiceImpl implements BankCustomerOperationSe
 		return Customer.builder()
 					.name(actualCustomer.getName())
 					.id(actualCustomer.getId())
-					.account(createNewClientAccount(depositValue, actualCustomer.getAccount())).build();
+					.account(createNewClientAccount(depositValue, actualCustomer.getAccount()))
+					.build();
 	}
 
 	private Account createNewClientAccount(final BigDecimal depositValue, final Account account) {
@@ -39,7 +40,7 @@ public class BankCustomerOperationServiceImpl implements BankCustomerOperationSe
 					.accountId(account.getAccountId())
 					.accountBalance(account.getAccountBalance().add(depositValue))
 					.accountTransactions(createNewListOfTransaction(account.getAccountTransactions(), depositValue))
-				.	build();
+					.build();
 	}
 
 	private List<AccountTransaction> createNewListOfTransaction(List<AccountTransaction> accountTransactions,
@@ -55,6 +56,13 @@ public class BankCustomerOperationServiceImpl implements BankCustomerOperationSe
 		return AccountTransaction.builder()
 								.amount(depositValue)
 								.operationType(OperationType.DEPOSIT_OPERATION)
-								.transactionDate(transactionDateTime).build();
+								.transactionDate(transactionDateTime)
+								.build();
+	}
+
+	public Customer withdraw(Customer customer, BigDecimal withdrawValue) throws ServiceException {
+		return Optional.ofNullable(customer)
+				.map(customerO -> createNewCustomer(customerO, withdrawValue))
+				.orElseThrow(() -> new ServiceException(""));
 	}
 }
