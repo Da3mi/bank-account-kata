@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Customer {
 
-	private Long id;
+	private Long 	id;
 	private Account account;
-	private String name;
+	private String 	name;
 	
 }

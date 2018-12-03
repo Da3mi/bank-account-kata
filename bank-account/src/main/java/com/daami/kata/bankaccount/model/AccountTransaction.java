@@ -1,6 +1,7 @@
 package com.daami.kata.bankaccount.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,11 +14,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AccountTransaction {
 
-	private String transactionId;
-	private String transactionDate;
-	private BigDecimal amount;
-	private OperationType operationType;
-	
+	private String 			transactionId;
+	private LocalDateTime 	transactionDate;
+	private BigDecimal 		amount;
+	private OperationType 	operationType;
+
 	public AccountTransaction(String transactionId) {
 		this.transactionId = transactionId;
 	}
