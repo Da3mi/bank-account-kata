@@ -63,14 +63,14 @@ public class BankCustomerOperationTest {
 	@Test
 	public void customer_should_do_withdraw_operation() {
 		
-		LocalDateTime transactionDateTime = LocalDate.of(2018, 10, 2).atStartOfDay();
+		LocalDateTime transactionDateTime = LocalDate.of(2018, 10, 1).atStartOfDay();
 		BigDecimal withdrawValue = BigDecimal.valueOf(250);
 
 		BankCustomerOperationServiceImpl bankCustomerOperationServiceImpl = new BankCustomerOperationServiceImpl();
 		
 		Account account = Account.builder()
 								.accountId("1l")
-								.accountBalance( BigDecimal.valueOf( 0 ) )
+								.accountBalance( BigDecimal.valueOf( 100 ) )
 								.build();
 
 		Customer customer = Customer.builder()
@@ -89,7 +89,7 @@ public class BankCustomerOperationTest {
 		Account expectedAccount = Account.builder()
 											.accountId("1l")
 											.accountTransactions(Arrays.asList(expectedAccountTransaction))
-											.accountBalance(withdrawValue)
+											.accountBalance(account.getAccountBalance().subtract(withdrawValue))
 											.build();
 		
 		Customer expectedCustomer = Customer.builder()

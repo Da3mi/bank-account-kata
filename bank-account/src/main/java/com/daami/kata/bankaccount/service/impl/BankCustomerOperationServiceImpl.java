@@ -21,48 +21,56 @@ public class BankCustomerOperationServiceImpl implements BankCustomerOperationSe
 	LocalDateTime transactionDateTime = LocalDate.of(2018, 10, 1).atStartOfDay();
 
 	@Override
-	public Customer deposit(final Customer customer, final BigDecimal depositValue) {
+	public Customer deposit(final Customer customer, final BigDecimal depositTransactionValue) {
 		return Optional.ofNullable(customer)
-					.map(customerO -> createNewCustomer(customerO, depositValue))
-					.orElseThrow(() -> new ServiceException(""));
+					.map(customerO -> createNewCustomer(customerO, depositTransactionValue, OperationType.DEPOSIT_OPERATION))
+					.orElseThrow(() -> new ServiceException("customer not found to do deposit transaction"));
 	}
 
-	private Customer createNewCustomer(final Customer actualCustomer, final BigDecimal depositValue) {
+	private Customer createNewCustomer(final Customer actualCustomer, final BigDecimal transactionAmount, OperationType operationType) {
 		return Customer.builder()
 					.name(actualCustomer.getName())
 					.id(actualCustomer.getId())
-					.account(createNewClientAccount(depositValue, actualCustomer.getAccount()))
+					.account(createNewClientAccount(transactionAmount, actualCustomer.getAccount(), operationType))
 					.build();
 	}
 
-	private Account createNewClientAccount(final BigDecimal depositValue, final Account account) {
+	private Account createNewClientAccount(final BigDecimal transactionAmount, final Account account, OperationType operationType) {
 		return Account.builder()
 					.accountId(account.getAccountId())
-					.accountBalance(account.getAccountBalance().add(depositValue))
-					.accountTransactions(createNewListOfTransaction(account.getAccountTransactions(), depositValue))
+					.accountBalance(computeBalance(account.getAccountBalance(), transactionAmount, operationType))
+					.accountTransactions(createNewListOfTransaction(account.getAccountTransactions(), transactionAmount, operationType))
 					.build();
 	}
 
+	
+	private BigDecimal computeBalance(BigDecimal actualBalance, BigDecimal transactionAmount, OperationType operationType ) throws ServiceException {
+		return Optional.ofNullable(actualBalance).map( balance -> 
+				OperationType.DEPOSIT_OPERATION.equals(operationType) ? balance.add(transactionAmount) : balance.subtract(transactionAmount))
+				.orElseThrow(() -> new ServiceException("internal technical error"));
+		
+	}
+	
 	private List<AccountTransaction> createNewListOfTransaction(List<AccountTransaction> accountTransactions,
-			final BigDecimal depositValueOfNewTransaction) {
+			final BigDecimal transactionAmount, OperationType operationType) {
 
 		return Stream
 				.concat(accountTransactions.stream(),
-						Arrays.asList(createNewDepositTransaction(depositValueOfNewTransaction)).stream())
+						Arrays.asList(createNewTransaction(transactionAmount, operationType)).stream())
 				.distinct().collect(Collectors.toList());
 	}
 
-	private AccountTransaction createNewDepositTransaction(final BigDecimal depositValue) {
+	private AccountTransaction createNewTransaction(final BigDecimal depositValue, OperationType operationType) {
 		return AccountTransaction.builder()
 								.amount(depositValue)
-								.operationType(OperationType.DEPOSIT_OPERATION)
+								.operationType(operationType)
 								.transactionDate(transactionDateTime)
 								.build();
 	}
 
-	public Customer withdraw(Customer customer, BigDecimal withdrawValue) throws ServiceException {
+	public Customer withdraw(Customer customer, BigDecimal withdrawTransactionValue) throws ServiceException {
 		return Optional.ofNullable(customer)
-				.map(customerO -> createNewCustomer(customerO, withdrawValue))
-				.orElseThrow(() -> new ServiceException(""));
+				.map(customerO -> createNewCustomer(customerO, withdrawTransactionValue, OperationType.WITHDRAWAL_OPERATION))
+				.orElseThrow(() -> new ServiceException("customer not found to do withdraw transaction"));
 	}
 }

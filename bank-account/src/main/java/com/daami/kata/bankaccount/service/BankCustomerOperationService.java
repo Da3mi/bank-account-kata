@@ -7,7 +7,7 @@ import com.daami.kata.bankaccount.model.Customer;
 
 public interface BankCustomerOperationService {
 	
-	public Customer deposit(final Customer customer, final BigDecimal depositValue) throws ServiceException;
+	public Customer deposit(final Customer customer, final BigDecimal depositTransactionValue) throws ServiceException;
 	
 	
 }
