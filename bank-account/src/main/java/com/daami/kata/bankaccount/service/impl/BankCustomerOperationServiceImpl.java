@@ -28,13 +28,13 @@ public class BankCustomerOperationServiceImpl implements BankCustomerOperationSe
 	}
 	
 	@Override
-	public Customer withdraw(Customer customer, BigDecimal withdrawTransactionValue) {
+	public Customer withdraw(final Customer customer, final BigDecimal withdrawTransactionValue) {
 		return Optional.ofNullable(customer)
 				.map(customerO -> createNewCustomer(customerO, withdrawTransactionValue, OperationType.WITHDRAWAL_OPERATION))
 				.orElseThrow(() -> new ServiceException("customer not found to do withdraw transaction"));
 	}
 
-	private Customer createNewCustomer(final Customer actualCustomer, final BigDecimal transactionAmount, OperationType operationType) {
+	private Customer createNewCustomer(final Customer actualCustomer, final BigDecimal transactionAmount, final OperationType operationType) {
 		return Customer.builder()
 					.name(actualCustomer.getName())
 					.id(actualCustomer.getId())
@@ -42,7 +42,7 @@ public class BankCustomerOperationServiceImpl implements BankCustomerOperationSe
 					.build();
 	}
 
-	private Account createNewCustomerAccount(final BigDecimal transactionAmount, final Account account, OperationType operationType) {
+	private Account createNewCustomerAccount(final BigDecimal transactionAmount, final Account account, final OperationType operationType) {
 		return Account.builder()
 					.accountId(account.getAccountId())
 					.accountBalance(computeBalance(account.getAccountBalance(), transactionAmount, operationType))
@@ -50,14 +50,14 @@ public class BankCustomerOperationServiceImpl implements BankCustomerOperationSe
 					.build();
 	}
 	
-	private BigDecimal computeBalance(BigDecimal actualBalance, BigDecimal transactionAmount, OperationType operationType ) {
+	private BigDecimal computeBalance(final BigDecimal actualBalance, final BigDecimal transactionAmount, final OperationType operationType ) {
 		return Optional.ofNullable(actualBalance).map( balance -> 
 				OperationType.DEPOSIT_OPERATION.equals(operationType) ? balance.add(transactionAmount) : balance.subtract(transactionAmount))
 				.orElseThrow(() -> new ServiceException("internal technical error"));
 	}
 	
-	private List<AccountTransaction> createNewListOfTransaction(List<AccountTransaction> accountTransactions,
-			final BigDecimal transactionAmount, OperationType operationType) {
+	private List<AccountTransaction> createNewListOfTransaction(final List<AccountTransaction> accountTransactions,
+			final BigDecimal transactionAmount, final OperationType operationType) {
 
 		return Stream
 				.concat(accountTransactions.stream(),
@@ -65,7 +65,7 @@ public class BankCustomerOperationServiceImpl implements BankCustomerOperationSe
 				.distinct().collect(Collectors.toList());
 	}
 
-	private AccountTransaction createNewTransaction(final BigDecimal depositValue, OperationType operationType) {
+	private AccountTransaction createNewTransaction(final BigDecimal depositValue, final OperationType operationType) {
 		return AccountTransaction.builder()
 								.amount(depositValue)
 								.operationType(operationType)
