@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class Customer {
 
 	private Long id;
-	private Account currentAccount;
+	private Account account;
 	private String name;
 	
 }
