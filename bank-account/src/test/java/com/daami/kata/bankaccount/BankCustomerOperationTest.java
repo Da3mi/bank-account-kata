@@ -59,4 +59,14 @@ public class BankCustomerOperationTest {
 
 	}
 
+	
+	@Test
+	public void customer_should_do_withdraw_operation() {
+
+		BankCustomerOperationServiceImpl bankCustomerOperationServiceImpl = new BankCustomerOperationServiceImpl();
+
+		Customer actualCustomer = bankCustomerOperationServiceImpl.withdraw(customer, withdrawValue);
+
+	}
+	
 }
