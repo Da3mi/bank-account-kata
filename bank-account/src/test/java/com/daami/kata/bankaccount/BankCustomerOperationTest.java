@@ -14,7 +14,7 @@ import com.daami.kata.bankaccount.model.Account;
 import com.daami.kata.bankaccount.model.AccountTransaction;
 import com.daami.kata.bankaccount.model.Customer;
 import com.daami.kata.bankaccount.model.OperationType;
-import com.daami.kata.bankaccount.service.BankCustomerOperationServiceImpl;
+import com.daami.kata.bankaccount.service.impl.BankCustomerOperationServiceImpl;
 
 @SpringBootTest
 public class BankCustomerOperationTest {

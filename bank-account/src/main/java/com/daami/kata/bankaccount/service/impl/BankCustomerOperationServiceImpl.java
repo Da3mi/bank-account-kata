@@ -1,4 +1,4 @@
-package com.daami.kata.bankaccount.service;
+package com.daami.kata.bankaccount.service.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,11 +14,13 @@ import com.daami.kata.bankaccount.model.Account;
 import com.daami.kata.bankaccount.model.AccountTransaction;
 import com.daami.kata.bankaccount.model.Customer;
 import com.daami.kata.bankaccount.model.OperationType;
+import com.daami.kata.bankaccount.service.BankCustomerOperationService;
 
-public class BankCustomerOperationServiceImpl {
+public class BankCustomerOperationServiceImpl implements BankCustomerOperationService {
 
 	LocalDateTime transactionDateTime = LocalDate.of(2018, 10, 1).atStartOfDay();
 
+	@Override
 	public Customer deposit(final Customer customer, final BigDecimal depositValue) {
 		return Optional.ofNullable(customer)
 					.map(customerO -> createNewCustomer(customerO, depositValue))
