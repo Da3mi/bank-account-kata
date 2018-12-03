@@ -38,7 +38,7 @@ public class BankCustomerOperationTest {
 									.name("Montassar")
 									.id(new Long(1)).build();
 		
-		Customer actualCustomer = bankCustomerOperationServiceImpl.deposit(customer, depositValue);
+		Customer customerWhoDidDepositOperation = bankCustomerOperationServiceImpl.deposit(customer, depositValue);
 		
 		AccountTransaction expectedAccountTransaction = AccountTransaction.builder()
 																	.transactionDate(transactionDateTime)
@@ -51,21 +51,54 @@ public class BankCustomerOperationTest {
 										.accountBalance(depositValue).build();
 		
 		Customer expectedCustomer = Customer.builder()
-				.account(expectedAccount)
-				.name("Montassar")
-				.id(new Long(1)).build();
+										.account(expectedAccount)
+										.name("Montassar")
+										.id(new Long(1)).build();
 		
-		assertThat(expectedCustomer).isEqualTo(actualCustomer);
+		assertThat(expectedCustomer).isEqualTo(customerWhoDidDepositOperation);
 
 	}
 
 	
 	@Test
 	public void customer_should_do_withdraw_operation() {
+		
+		LocalDateTime transactionDateTime = LocalDate.of(2018, 10, 2).atStartOfDay();
+		BigDecimal withdrawValue = BigDecimal.valueOf(250);
 
 		BankCustomerOperationServiceImpl bankCustomerOperationServiceImpl = new BankCustomerOperationServiceImpl();
+		
+		Account account = Account.builder()
+								.accountId("1l")
+								.accountBalance( BigDecimal.valueOf( 0 ) )
+								.build();
 
-		Customer actualCustomer = bankCustomerOperationServiceImpl.withdraw(customer, withdrawValue);
+		Customer customer = Customer.builder()
+									.account(account)
+									.name("Montassar")
+									.id(new Long(1))
+									.build();
+
+		Customer customerWhoDidWhithdrawOperation = bankCustomerOperationServiceImpl.withdraw(customer, withdrawValue);
+		
+		AccountTransaction expectedAccountTransaction = AccountTransaction.builder()
+																.transactionDate(transactionDateTime)
+																.amount(withdrawValue)
+																.operationType(OperationType.WITHDRAWAL_OPERATION).build();
+		
+		Account expectedAccount = Account.builder()
+											.accountId("1l")
+											.accountTransactions(Arrays.asList(expectedAccountTransaction))
+											.accountBalance(withdrawValue)
+											.build();
+		
+		Customer expectedCustomer = Customer.builder()
+										.account(expectedAccount)
+										.name("Montassar")
+										.id(new Long(1))
+										.build();
+		
+		assertThat(expectedCustomer).isEqualTo(customerWhoDidWhithdrawOperation);
 
 	}
 	
