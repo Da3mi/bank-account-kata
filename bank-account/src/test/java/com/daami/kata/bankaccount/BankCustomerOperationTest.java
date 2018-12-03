@@ -38,7 +38,8 @@ public class BankCustomerOperationTest {
 		
 		Account expectedAccount = Account.builder()
 										.accountId("1l")
-										.accountTransactions(Arrays.asList(expectedAccountTransaction)).build();
+										.accountTransactions(Arrays.asList(expectedAccountTransaction))
+										.accountBalance(depositValue).build();
 		
 		Customer expectedCustomer = Customer.builder()
 				.account(account)
