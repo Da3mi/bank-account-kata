@@ -1,8 +1,6 @@
 package com.daami.kata.bankaccount.service.impl;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -15,11 +13,11 @@ import com.daami.kata.bankaccount.model.AccountTransaction;
 import com.daami.kata.bankaccount.model.Customer;
 import com.daami.kata.bankaccount.model.OperationType;
 import com.daami.kata.bankaccount.service.BankCustomerOperationService;
+import com.daami.kata.bankaccount.utility.BankAccountUtility;
 
 public class BankCustomerOperationServiceImpl implements BankCustomerOperationService {
-
-	LocalDateTime transactionDateTime = LocalDate.of(2018, 10, 1).atStartOfDay();
-
+	
+	
 	@Override
 	public Customer deposit(final Customer customer, final BigDecimal depositTransactionValue) {
 		return Optional.ofNullable(customer)
@@ -45,15 +43,9 @@ public class BankCustomerOperationServiceImpl implements BankCustomerOperationSe
 	private Account createNewCustomerAccount(final BigDecimal transactionAmount, final Account account, final OperationType operationType) {
 		return Account.builder()
 					.accountId(account.getAccountId())
-					.accountBalance(computeBalance(account.getAccountBalance(), transactionAmount, operationType))
+					.accountBalance(BankAccountUtility.computeBalance(account.getAccountBalance(), transactionAmount, operationType))
 					.accountTransactions(createNewListOfTransaction(account.getAccountTransactions(), transactionAmount, operationType))
 					.build();
-	}
-	
-	private BigDecimal computeBalance(final BigDecimal actualBalance, final BigDecimal transactionAmount, final OperationType operationType ) {
-		return Optional.ofNullable(actualBalance).map( balance -> 
-				OperationType.DEPOSIT_OPERATION.equals(operationType) ? balance.add(transactionAmount) : balance.subtract(transactionAmount))
-				.orElseThrow(() -> new ServiceException("internal technical error"));
 	}
 	
 	private List<AccountTransaction> createNewListOfTransaction(final List<AccountTransaction> accountTransactions,
