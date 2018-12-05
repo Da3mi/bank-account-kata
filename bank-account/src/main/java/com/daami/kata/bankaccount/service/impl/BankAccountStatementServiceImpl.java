@@ -22,7 +22,7 @@ public class BankAccountStatementServiceImpl implements BankAccountStatementServ
                                 .map( stringBuilder -> stringBuilder.append( getAccountHistoryHeader( bankCustomer ) ) )
                                 .map( stringBuilder -> stringBuilder.append( getAccountTransactionsDetails( bankCustomer.getAccount() ) ) )
                                 .map( StringBuilder::toString )
-                                .orElseThrow( () -> new ServiceException( "customer not found to do deposit transaction" ) );
+                                .orElseThrow( () -> new ServiceException( "customer not found to show account history" ) );
 
         System.out.println( result );
         return result;
