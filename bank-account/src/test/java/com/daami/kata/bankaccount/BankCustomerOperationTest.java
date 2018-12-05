@@ -19,7 +19,6 @@ import com.daami.kata.bankaccount.service.impl.BankCustomerOperationServiceImpl;
 @SpringBootTest
 public class BankCustomerOperationTest {
 
-	
 	@Test
 	public void customer_should_do_deposit_operation() {
 
@@ -29,77 +28,80 @@ public class BankCustomerOperationTest {
 		BankCustomerOperationServiceImpl bankCustomerOperationServiceImpl = new BankCustomerOperationServiceImpl();
 
 		Account account = Account.builder()
-									.accountId("1l")
-									.accountBalance( BigDecimal.valueOf( 0 ) )
-									.build();
-		
+				.accountId("1l")
+				.accountBalance(BigDecimal.valueOf(0))
+				.build();
+
 		Customer customer = Customer.builder()
-									.account(account)
-									.name("Montassar")
-									.id(new Long(1)).build();
-		
+				.account(account)
+				.name("Montassar")
+				.id(new Long(1))
+				.build();
+
 		Customer customerWhoDidDepositOperation = bankCustomerOperationServiceImpl.deposit(customer, depositValue);
-		
+
 		AccountTransaction expectedAccountTransaction = AccountTransaction.builder()
-																	.transactionDate(transactionDateTime)
-																	.amount(depositValue)
-																	.operationType(OperationType.DEPOSIT_OPERATION).build();
-		
+				.transactionDate(transactionDateTime)
+				.amount(depositValue)
+				.operationType(OperationType.DEPOSIT_OPERATION)
+				.build();
+
 		Account expectedAccount = Account.builder()
-										.accountId("1l")
-										.accountTransactions(Arrays.asList(expectedAccountTransaction))
-										.accountBalance(depositValue).build();
-		
+				.accountId("1l")
+				.accountTransactions(Arrays.asList(expectedAccountTransaction))
+				.accountBalance(depositValue).build();
+
 		Customer expectedCustomer = Customer.builder()
-										.account(expectedAccount)
-										.name("Montassar")
-										.id(new Long(1)).build();
-		
+				.account(expectedAccount)
+				.name("Montassar")
+				.id(new Long(1))
+				.build();
+
 		assertThat(expectedCustomer).isEqualTo(customerWhoDidDepositOperation);
 
 	}
 
-	
 	@Test
 	public void customer_should_do_withdraw_operation() {
-		
+
 		LocalDateTime transactionDateTime = LocalDate.of(2018, 10, 1).atStartOfDay();
 		BigDecimal withdrawValue = BigDecimal.valueOf(250);
 
 		BankCustomerOperationServiceImpl bankCustomerOperationServiceImpl = new BankCustomerOperationServiceImpl();
-		
+
 		Account account = Account.builder()
-								.accountId("1l")
-								.accountBalance( BigDecimal.valueOf( 100 ) )
-								.build();
+				.accountId("1l")
+				.accountBalance(BigDecimal.valueOf(100))
+				.build();
 
 		Customer customer = Customer.builder()
-									.account(account)
-									.name("Montassar")
-									.id(new Long(1))
-									.build();
+				.account(account)
+				.name("Montassar")
+				.id(new Long(1))
+				.build();
 
 		Customer customerWhoDidWhithdrawOperation = bankCustomerOperationServiceImpl.withdraw(customer, withdrawValue);
-		
+
 		AccountTransaction expectedAccountTransaction = AccountTransaction.builder()
-																.transactionDate(transactionDateTime)
-																.amount(withdrawValue)
-																.operationType(OperationType.WITHDRAWAL_OPERATION).build();
-		
+				.transactionDate(transactionDateTime)
+				.amount(withdrawValue)
+				.operationType(OperationType.WITHDRAWAL_OPERATION)
+				.build();
+
 		Account expectedAccount = Account.builder()
-											.accountId("1l")
-											.accountTransactions(Arrays.asList(expectedAccountTransaction))
-											.accountBalance(account.getAccountBalance().subtract(withdrawValue))
-											.build();
-		
+				.accountId("1l")
+				.accountTransactions(Arrays.asList(expectedAccountTransaction))
+				.accountBalance(account.getAccountBalance().subtract(withdrawValue))
+				.build();
+
 		Customer expectedCustomer = Customer.builder()
-										.account(expectedAccount)
-										.name("Montassar")
-										.id(new Long(1))
-										.build();
-		
+				.account(expectedAccount)
+				.name("Montassar")
+				.id(new Long(1))
+				.build();
+
 		assertThat(expectedCustomer).isEqualTo(customerWhoDidWhithdrawOperation);
 
 	}
-	
+
 }

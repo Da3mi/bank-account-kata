@@ -16,53 +16,50 @@ import com.daami.kata.bankaccount.service.BankCustomerOperationService;
 import com.daami.kata.bankaccount.utility.BankAccountUtility;
 
 public class BankCustomerOperationServiceImpl implements BankCustomerOperationService {
-	
-	
+
 	@Override
 	public Customer deposit(final Customer customer, final BigDecimal depositTransactionValue) {
-		return Optional.ofNullable(customer)
-					.map(customerO -> createNewCustomer(customerO, depositTransactionValue, OperationType.DEPOSIT_OPERATION))
-					.orElseThrow(() -> new ServiceException("customer not found to do deposit transaction"));
+		return Optional.ofNullable(customer).map(
+				customerO -> createNewCustomer(customerO, depositTransactionValue, OperationType.DEPOSIT_OPERATION))
+				.orElseThrow(() -> new ServiceException("customer not found to do deposit transaction"));
 	}
-	
+
 	@Override
 	public Customer withdraw(final Customer customer, final BigDecimal withdrawTransactionValue) {
-		return Optional.ofNullable(customer)
-				.map(customerO -> createNewCustomer(customerO, withdrawTransactionValue, OperationType.WITHDRAWAL_OPERATION))
+		return Optional.ofNullable(customer).map(
+				customerO -> createNewCustomer(customerO, withdrawTransactionValue, OperationType.WITHDRAWAL_OPERATION))
 				.orElseThrow(() -> new ServiceException("customer not found to do withdraw transaction"));
 	}
 
-	private Customer createNewCustomer(final Customer actualCustomer, final BigDecimal transactionAmount, final OperationType operationType) {
+	private Customer createNewCustomer(final Customer actualCustomer, final BigDecimal transactionAmount,
+			final OperationType operationType) {
 		return Customer.builder()
-					.name(actualCustomer.getName())
-					.id(actualCustomer.getId())
-					.account(createNewCustomerAccount(transactionAmount, actualCustomer.getAccount(), operationType))
-					.build();
+				.name(actualCustomer.getName())
+				.id(actualCustomer.getId())
+				.account(createNewCustomerAccount(transactionAmount, actualCustomer.getAccount(), operationType))
+				.build();
 	}
 
-	private Account createNewCustomerAccount(final BigDecimal transactionAmount, final Account account, final OperationType operationType) {
+	private Account createNewCustomerAccount(final BigDecimal transactionAmount, final Account account,
+			final OperationType operationType) {
 		return Account.builder()
-					.accountId(account.getAccountId())
-					.accountBalance(BankAccountUtility.computeBalance(account.getAccountBalance(), transactionAmount, operationType))
-					.accountTransactions(createNewListOfTransaction(account.getAccountTransactions(), transactionAmount, operationType))
-					.build();
+				.accountId(account.getAccountId())
+				.accountBalance(BankAccountUtility.computeBalance(account.getAccountBalance(), transactionAmount,operationType))
+				.accountTransactions(createNewListOfTransaction(account.getAccountTransactions(), transactionAmount, operationType))
+				.build();
 	}
-	
+
 	private List<AccountTransaction> createNewListOfTransaction(final List<AccountTransaction> accountTransactions,
 			final BigDecimal transactionAmount, final OperationType operationType) {
 
 		return Stream
-				.concat(accountTransactions.stream(),
-						Arrays.asList(createNewTransaction(transactionAmount, operationType)).stream())
+				.concat(accountTransactions.stream(), Arrays.asList(createNewTransaction(transactionAmount, operationType)).stream())
 				.distinct().collect(Collectors.toList());
 	}
 
 	private AccountTransaction createNewTransaction(final BigDecimal depositValue, final OperationType operationType) {
-		return AccountTransaction.builder()
-								.amount(depositValue)
-								.operationType(operationType)
-								.transactionDate(transactionDateTime)
-								.build();
+		return AccountTransaction.builder().amount(depositValue).operationType(operationType)
+				.transactionDate(transactionDateTime).build();
 	}
-	
+
 }

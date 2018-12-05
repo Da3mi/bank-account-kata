@@ -14,10 +14,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AccountTransaction {
 
-	private String 			transactionId;
-	private LocalDateTime 	transactionDate;
-	private BigDecimal 		amount;
-	private OperationType 	operationType;
+	private String transactionId;
+	private LocalDateTime transactionDate;
+	private BigDecimal amount;
+	private OperationType operationType;
 
 	public AccountTransaction(String transactionId) {
 		this.transactionId = transactionId;

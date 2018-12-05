@@ -15,11 +15,10 @@ public class BankAccountServiceConfiguration {
 	public BankCustomerOperationService BankCustomerOperationService() {
 		return new BankCustomerOperationServiceImpl();
 	}
-	
+
 	@Bean
 	public BankAccountStatementService bankAccountService() {
 		return new BankAccountStatementServiceImpl();
 	}
-	
 
 }

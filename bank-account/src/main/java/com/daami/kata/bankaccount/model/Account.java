@@ -14,14 +14,14 @@ import lombok.Singular;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Account {
-	
-	private String 								accountId;
-	private BigDecimal 							accountBalance;
-	@Singular private List<AccountTransaction> 	accountTransactions;
-	
-	
+
+	private String accountId;
+	private BigDecimal accountBalance;
+	@Singular
+	private List<AccountTransaction> accountTransactions;
+
 	public Account(String accountId) {
 		this.accountId = accountId;
 	}
-	
+
 }

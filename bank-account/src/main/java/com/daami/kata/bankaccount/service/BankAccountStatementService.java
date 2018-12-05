@@ -8,7 +8,6 @@ import com.daami.kata.bankaccount.model.Customer;
 
 public interface BankAccountStatementService {
 	
-	
 	LocalDateTime transactionDateTime = LocalDate.of(2018, 12, 4).atStartOfDay();
 	
 	final static String ACCOUNT_HEADER_TEMPLATE = "%s \n"
@@ -21,7 +20,6 @@ public interface BankAccountStatementService {
 	
 	final static String ACCOUNT_OPERATION_LINE_TEMPLATE = ""
 			+ " %s	| %s			| %s \n";
-	
 
 	public String showCsutomerAccountHistory(Customer bankCustomer) throws ServiceException;
 

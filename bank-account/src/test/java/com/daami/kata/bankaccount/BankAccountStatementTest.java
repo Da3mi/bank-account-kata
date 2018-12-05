@@ -100,7 +100,6 @@ public class BankAccountStatementTest {
 
 		System.out.println(expectedAccountHistory.toString());
 
-		assertThat(customerBankAccountHistory).isNotEmpty();
 		assertThat(expectedAccountHistory.toString()).isEqualTo(customerBankAccountHistory);
 
 	}
