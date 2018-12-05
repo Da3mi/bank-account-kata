@@ -1,52 +1,59 @@
 package com.daami.kata.bankaccount.service.impl;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Optional;
-
-import org.springframework.util.CollectionUtils;
-
 import com.daami.kata.bankaccount.exception.ServiceException;
+import com.daami.kata.bankaccount.model.Account;
 import com.daami.kata.bankaccount.model.AccountTransaction;
 import com.daami.kata.bankaccount.model.Customer;
 import com.daami.kata.bankaccount.service.BankAccountStatementService;
 import com.daami.kata.bankaccount.utility.BankAccountUtility;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Optional;
+
 public class BankAccountStatementServiceImpl implements BankAccountStatementService {
-	
-	@Override
-	public String showCsutomerAccountHistory(final Customer bankCustomer) {
 
-		Customer customer = Optional.ofNullable(bankCustomer)
-				.orElseThrow(() -> new ServiceException("customer not found to do deposit transaction"));
 
-		StringBuilder accountHistory = new StringBuilder();
+    @Override
+    public String showCsutomerAccountHistory( final Customer bankCustomer ) {
 
-		String accountHistoryheader = String.format(ACCOUNT_HEADER_TEMPLATE, bankCustomer.getName(), LocalDate.now(),
-				LocalDate.now().atStartOfDay(), bankCustomer.getAccount().getAccountBalance());
+        String result = Optional.ofNullable( bankCustomer )
+                                .map( customerO -> new StringBuilder() )
+                                .map( stringBuilder -> stringBuilder.append( getAccountHistoryHeader( bankCustomer ) ) )
+                                .map( stringBuilder -> stringBuilder.append( getAccountTransactionsDetails( bankCustomer.getAccount() ) ) )
+                                .map( StringBuilder::toString )
+                                .orElseThrow( () -> new ServiceException( "customer not found to do deposit transaction" ) );
 
-		accountHistory.append(accountHistoryheader);
+        System.out.println( result );
+        return result;
+    }
 
-		if (!CollectionUtils.isEmpty(customer.getAccount().getAccountTransactions())) {
+    private String getAccountHistoryHeader( final Customer bankCustomer ) {
+        return String.format( ACCOUNT_HEADER_TEMPLATE, bankCustomer.getName(),
+                              LocalDate.now(),
+                              LocalDate.now().atStartOfDay(),
+                              bankCustomer.getAccount().getAccountBalance() );
+    }
 
-			customer.getAccount().getAccountTransactions().forEach(tr -> {
+    private String getAccountTransactionsDetails( final Account account ) {
+        return Optional.ofNullable( account.getAccountTransactions() )
+                       .flatMap( accountTransactions -> accountTransactions.stream()
+                                                                           .map( accountTransaction -> setAccountBalanceAndPrintLine( accountTransaction,account ) )
+                                                                           .reduce( String::concat ) )
+                       .orElse( null );
+    }
 
-				customer.getAccount().setAccountBalance(BankAccountUtility.computeBalance(
-						customer.getAccount().getAccountBalance(), tr.getAmount(), tr.getOperationType()));
+    private String setAccountBalanceAndPrintLine(final AccountTransaction accountTransaction, final Account account){
+        account.setAccountBalance( BankAccountUtility.computeBalance(account.getAccountBalance(),
+                                                                     accountTransaction.getAmount(),
+                                                                     accountTransaction.getOperationType() ) );
+        return printLine( accountTransaction,account.getAccountBalance( ));
+    }
 
-				accountHistory.append(printLine(tr, customer.getAccount().getAccountBalance()));
-
-			});
-
-		}
-		System.out.println(accountHistory);
-		return accountHistory.toString();
-	}
-	
-	private String printLine(final AccountTransaction transaction, final BigDecimal balance) {
-		return String.format(ACCOUNT_OPERATION_LINE_TEMPLATE, transaction.getTransactionDate(),
-				transaction.getOperationType().getOperation().concat(transaction.getAmount().toString()), balance);
-	}
-	
-	
+    private String printLine( final AccountTransaction transaction, final BigDecimal balance ) {
+        return String.format( ACCOUNT_OPERATION_LINE_TEMPLATE,
+                              transaction.getTransactionDate(),
+                              transaction.getOperationType().getOperation().concat( transaction.getAmount().toString() ),
+                              balance );
+    }
 }
