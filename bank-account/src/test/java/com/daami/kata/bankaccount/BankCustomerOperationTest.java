@@ -1,8 +1,6 @@
 package com.daami.kata.bankaccount;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
 import java.math.BigDecimal;
@@ -128,7 +126,6 @@ public class BankCustomerOperationTest {
 
 		try {
 			bankCustomerOperationServiceImpl.withdraw(customer, withdrawValue);
-
 			failBecauseExceptionWasNotThrown(ServiceException.class);
 		} catch (ServiceException e) {
 			assertThat(e).hasMessage("balance is insufficient to do withdraw operation");
