@@ -1,6 +1,9 @@
 package com.daami.kata.bankaccount;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
+
+import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -10,6 +13,7 @@ import java.util.Arrays;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.daami.kata.bankaccount.exception.ServiceException;
 import com.daami.kata.bankaccount.model.Account;
 import com.daami.kata.bankaccount.model.AccountTransaction;
 import com.daami.kata.bankaccount.model.Customer;
@@ -71,7 +75,7 @@ public class BankCustomerOperationTest {
 
 		Account account = Account.builder()
 				.accountId("1l")
-				.accountBalance(BigDecimal.valueOf(100))
+				.accountBalance(BigDecimal.valueOf(1000))
 				.build();
 
 		Customer customer = Customer.builder()
@@ -101,6 +105,34 @@ public class BankCustomerOperationTest {
 				.build();
 
 		assertThat(expectedCustomer).isEqualTo(customerWhoDidWhithdrawOperation);
+
+	}
+	
+	@Test
+	public void withdraw_operation_should_return_exception() {
+
+		BigDecimal withdrawValue = BigDecimal.valueOf(250);
+
+		BankCustomerOperationServiceImpl bankCustomerOperationServiceImpl = new BankCustomerOperationServiceImpl();
+
+		Account account = Account.builder()
+				.accountId("1l")
+				.accountBalance(BigDecimal.valueOf(100))
+				.build();
+
+		Customer customer = Customer.builder()
+				.account(account)
+				.name("Montassar")
+				.id(new Long(1))
+				.build();
+
+		try {
+			bankCustomerOperationServiceImpl.withdraw(customer, withdrawValue);
+
+			failBecauseExceptionWasNotThrown(ServiceException.class);
+		} catch (ServiceException e) {
+			assertThat(e).hasMessage("balance is insufficient to do withdraw operation");
+		}
 
 	}
 
